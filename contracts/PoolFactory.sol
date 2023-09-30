@@ -3,7 +3,7 @@ pragma solidity 0.8.20;
 
 import {Pausable} from "@openzeppelin/contracts/security/Pausable.sol";
 import {OnChainWhitelist} from './utils/OnChainWhitelist.sol';
-import {DexPool} from './DexPool.sol';
+import {LiquidityPool} from './LiquidityPool.sol';
 
 contract PoolFactory is Pausable, OnChainWhitelist {
     address[] public allPools;
@@ -32,7 +32,7 @@ contract PoolFactory is Pausable, OnChainWhitelist {
         require(_token0 != address(0) && _token1 != address(0), "zero address is not allowed!");
         require(getPoolAddress[_token0][_token1] == address(0), "token pair exists!");
         
-        bytes memory bytecode = type(DexPool).creationCode;
+        bytes memory bytecode = type(LiquidityPool).creationCode;
         bytes32 salt = keccak256(abi.encodePacked(_token0, _token1));
         
         assembly {
@@ -46,8 +46,8 @@ contract PoolFactory is Pausable, OnChainWhitelist {
 
         allPools.push(poolAddress);
 
-        DexPool(poolAddress).initPool(_token0, _token1, _fees);
-        DexPool(poolAddress).transferOwnership(msg.sender);
+        LiquidityPool(poolAddress).initPool(_token0, _token1, _fees);
+        LiquidityPool(poolAddress).transferOwnership(msg.sender);
 
         emit LogCreatePair(_token0, _token1, msg.sender, allPools.length);
     }

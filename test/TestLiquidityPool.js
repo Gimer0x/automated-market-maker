@@ -8,7 +8,7 @@ const { expect } = require("chai");
 const ZERO = ethers.parseEther("0");
 const FIVE = ethers.parseEther("5");
 const TEN = ethers.parseEther("10");
-const FEES = 200;
+const FEES = 2000;
 const initialTokens = ethers.parseEther("100");
 
 describe("Liquidity Pool", function () {
@@ -18,7 +18,7 @@ describe("Liquidity Pool", function () {
     const uni = await ethers.deployContract("Token", ["Uniswap Token", "UNI"]);
     const dai = await ethers.deployContract("Token", ["DAI Token", "DAI"]);
 
-    const dexPool = await ethers.deployContract("DexPool");
+    const dexPool = await ethers.deployContract("LiquidityPool");
 
     await expect(dexPool.initPool(dai, uni, FEES))
       .not.to.be.reverted;
@@ -82,7 +82,7 @@ describe("Liquidity Pool", function () {
       await uni.connect(supplier1).transfer(dexPool, FIVE);
                    
       await expect(
-        dexPool.connect(supplier1).swap(tokensOut, supplier1.address, uni)
+        dexPool.connect(supplier1).swapTokens(tokensOut, supplier1.address, uni)
       ).to.changeTokenBalances(dai, [supplier1], [tokensOut]);
 
       const uniNewBalance = (await uni.balanceOf(supplier1.address));
