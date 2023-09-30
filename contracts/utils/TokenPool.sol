@@ -4,29 +4,28 @@
 pragma solidity 0.8.20;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC20Errors} from "../interfaces/IERC20Errors.sol";
-import {ITokenPool} from "../interfaces/ITokenPool.sol";
 
-contract TokenPool is Ownable, ITokenPool, IERC20Errors {
-    uint256 public _totalSupply;
-    string private _name = "Token Pool";
-    string private _symbol = "TKP";
+contract TokenPool is Ownable, IERC20, IERC20Errors {
+    uint256 private _totalSupply;
+    string constant _name = "Token Pool";
+    string constant _symbol = "TKP";
 
     mapping(address account => uint256) private _balances;
     mapping(address account => mapping(address spender => uint256)) private _allowances;
 
-    
     constructor() {}
 
-    function name() public view virtual returns (string memory) {
+    function name() external view virtual returns (string memory) {
         return _name;
     }
 
-    function symbol() public view virtual returns (string memory) {
+    function symbol() external view virtual returns (string memory) {
         return _symbol;
     }
 
-    function decimals() public view virtual returns (uint8) {
+    function decimals() external view virtual returns (uint8) {
         return 18;
     }
 
@@ -38,7 +37,7 @@ contract TokenPool is Ownable, ITokenPool, IERC20Errors {
         return _balances[account];
     }
 
-    function transfer(address to, uint256 value) public virtual returns (bool) {
+    function transfer(address to, uint256 value) external virtual returns (bool) {
         address owner = _msgSender();
         _transfer(owner, to, value);
         return true;
@@ -48,13 +47,13 @@ contract TokenPool is Ownable, ITokenPool, IERC20Errors {
         return _allowances[owner][spender];
     }
 
-    function approve(address spender, uint256 value) public virtual returns (bool) {
+    function approve(address spender, uint256 value) external virtual returns (bool) {
         address owner = _msgSender();
         _approve(owner, spender, value);
         return true;
     }
 
-    function transferFrom(address from, address to, uint256 value) public virtual returns (bool) {
+    function transferFrom(address from, address to, uint256 value) external virtual returns (bool) {
         address spender = _msgSender();
         _spendAllowance(from, spender, value);
         _transfer(from, to, value);

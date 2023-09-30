@@ -1,26 +1,25 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import "@openzeppelin/contracts/utils/math/Math.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import {Pausable} from "@openzeppelin/contracts/security/Pausable.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {TokenPool} from "./utils/TokenPool.sol";
+import {Math} from "./utils/Math.sol";
 
-import "./utils/TokenPool.sol";
-
-contract DexPool is TokenPool, ReentrancyGuard, Pausable{
+contract LiquidityPool is TokenPool, ReentrancyGuard, Pausable{
     using SafeERC20 for IERC20;
 
     IERC20 public token0;
     IERC20 public token1;
 
-    uint public constant MAX_FEE_PERCENT = 200; // 2%
-    uint private constant factor = 10000;
+    uint public constant MAX_FEE_PERCENT = 2000; // 2%
+    uint private constant FACTOR = 100000;
     uint private reserve0;
     uint private reserve1;
     uint public fees;
-    uint private blockTimestampLast;    
+    uint private lastTimestamp;    
     bool public initialized;
     
     modifier onlyTokenInPool(address _tokenIn) {
@@ -51,11 +50,11 @@ contract DexPool is TokenPool, ReentrancyGuard, Pausable{
     function getLatestReserves() 
         public 
         view 
-        returns (uint _reserve0, uint _reserve1, uint _blockTimestampLast) 
+        returns (uint _reserve0, uint _reserve1, uint _lastTimestamp) 
     {
         _reserve0 = reserve0;
         _reserve1 = reserve1;
-        _blockTimestampLast = blockTimestampLast;
+        _lastTimestamp = lastTimestamp;
     }
 
     function setLiquidityPoolFees(uint _newFees)
@@ -72,10 +71,10 @@ contract DexPool is TokenPool, ReentrancyGuard, Pausable{
     {
         reserve0 = _reserve0;
         reserve1 = _reserve1;
-        blockTimestampLast = block.timestamp;
+        lastTimestamp = block.timestamp;
     }
 
-    function swap(uint _amountOut, address _to, address _tokenIn)
+    function swapTokens(uint _amountOut, address _to, address _tokenIn)
         whenNotPaused
         nonReentrant
         external
@@ -122,7 +121,7 @@ contract DexPool is TokenPool, ReentrancyGuard, Pausable{
         returns (uint amountOut)
     {       
         (,, uint reserveIn, uint reserveOut) = getReserves(_tokenIn);
-        uint amountInWithFee = (_amountIn * (factor-fees)) / factor;
+        uint amountInWithFee = (_amountIn * (FACTOR-fees)) / FACTOR;
         amountOut = (reserveOut * amountInWithFee)/(reserveIn + amountInWithFee);
     }
 

@@ -2,11 +2,11 @@
 pragma solidity 0.8.20;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-interface IDexPool {
+interface ILiquidityPool {
     function owner() external view returns (address);
     function fees() external view returns(uint);
     function addLiquidity(address _to) external returns (uint shares);
-    function swap(uint _amountOut, address _to, address _tokenIn) external;
+    function swapTokens(uint _amountOut, address _to, address _tokenIn) external;
     function removeLiquidity(address _to) external returns (uint amount0, uint amount1);
     function transferFrom(address from, address to, uint256 amount ) external returns (bool);
     function getTokenPairRatio(address _tokenIn, uint _amountIn) external view returns (uint tokenOut);
