@@ -7,5 +7,16 @@
   "dependencies": {
     "@openzeppelin/contracts": "^4.9.3",
     "dotenv": "^16.3.1"
+  },
+   "scripts": {
+    "start": "npx hardhat node",
+    "clean": "npx hardhat clean",
+    "test": "npx hardhat test",
+    "compile": "npx hardhat compile",
+    "deploy:local": "npx hardhat run scripts/deploy.ts --network localhost",
+    "deploy:goerli": "npx hardhat run scripts/deploy_arbitrum_goerli.ts --network arbitrum_goerli",
+    "deploy:sepolia": "npx hardhat run scripts/deploy.ts --network sepolia",
+    "deploy:tokens": "npx hardhat run scripts/deploy_tokens.ts --network sepolia",
+    "flat": "npx hardhat flatten contracts/PoolFactory.sol > PoolFactory.sol"
   }
 }
