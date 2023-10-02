@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.20;
 
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Pausable} from "@openzeppelin/contracts/security/Pausable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {TokenPool} from "./utils/TokenPool.sol";
@@ -14,15 +14,15 @@ contract LiquidityPool is TokenPool, ReentrancyGuard, Pausable{
     IERC20 public token0;
     IERC20 public token1;
 
-    uint public constant MAX_FEE_PERCENT = 2000; // 2%
+    uint public constant MAX_FEE_AMOUNT = 2000; // 2%
     uint private constant FACTOR = 100000;
     uint private reserve0;
     uint private reserve1;
     uint public fees;
-    uint private lastTimestamp;    
+    uint private lastTimestamp;
     bool public initialized;
     
-    modifier onlyTokenInPool(address _tokenIn) {
+    modifier onlyPairTokens(address _tokenIn) {
         require(
             _tokenIn == address(token0) || _tokenIn == address(token1),
             "token is not supported!"
@@ -40,6 +40,7 @@ contract LiquidityPool is TokenPool, ReentrancyGuard, Pausable{
     {
         require(!initialized, 'initialization not allowed!');
         require(_token0 != address(0) && _token1 != address(0), "zero address not allowed!");
+
         token0 = IERC20(_token0);
         token1 = IERC20(_token1);
 
@@ -57,12 +58,12 @@ contract LiquidityPool is TokenPool, ReentrancyGuard, Pausable{
         _lastTimestamp = lastTimestamp;
     }
 
-    function setLiquidityPoolFees(uint _newFees)
+    function setPoolFees(uint _newFees)
         external 
         onlyOwner
     {
         require(_newFees != fees, "fees should be different!");
-        require(_newFees <=  MAX_FEE_PERCENT, "fees exceed limit!");
+        require(_newFees <=  MAX_FEE_AMOUNT, "fees exceed limit!");
         fees = _newFees;
     }
 
@@ -114,10 +115,10 @@ contract LiquidityPool is TokenPool, ReentrancyGuard, Pausable{
             : (token1, token0, reserve1, reserve0);
     }
 
-    function getTokensOutAmount(address _tokenIn, uint _amountIn)
+    function getAmountOut(address _tokenIn, uint _amountIn)
         external
         view
-        onlyTokenInPool(_tokenIn)
+        onlyPairTokens(_tokenIn)
         returns (uint amountOut)
     {       
         (,, uint reserveIn, uint reserveOut) = getReserves(_tokenIn);
@@ -128,7 +129,7 @@ contract LiquidityPool is TokenPool, ReentrancyGuard, Pausable{
     function getTokenPairRatio(address _tokenIn, uint _amountIn)
         external
         view
-        onlyTokenInPool(_tokenIn)
+        onlyPairTokens(_tokenIn)
         returns (uint tokenOut)
     {
         (,, uint reserveIn, uint reserveOut) = getReserves(_tokenIn);
