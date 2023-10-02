@@ -22,6 +22,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
     event LogAddLiquidityETH(address _sender, address _token, uint _amountToken, address _poolAddress, uint _shares);
     event LogRemoveLiquidity(address _sender, address _tokenA, address _tokenB, uint _shares, uint _amountA, uint _amountB, address poolAddress);
     event LogRemoveLiquidityETH(address _sender, address _token, uint _shares, uint _amountToken, uint _amountETH);
+
     event LogAddTokenToTokenLiquidity(
         address _sender, 
         address _tokenA, 
@@ -31,7 +32,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         address poolAddress
     );
 
-    event LogSwapTokensWithFees(
+    event LogswapTokenToToken(
         address _sender, 
         address _tokenIn, 
         address _tokenOut, 
@@ -63,7 +64,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         factory = IPoolFactory(_factory);
     }
 
-    function _swapTokensWithFees(address _poolAddress, address _to, address _tokenIn, uint _amountIn) 
+    function _swapTokenToToken(address _poolAddress, address _to, address _tokenIn, uint _amountIn) 
         internal
     {
         uint amountOut;
@@ -72,7 +73,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         ILiquidityPool(_poolAddress).swapTokens(amountOut, _to, _tokenIn);
     }
 
-    function swapTokensWithFees(
+    function swapTokenToToken(
         address _tokenIn, 
         address _tokenOut, 
         uint _amountIn, 
@@ -86,20 +87,20 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         require(_tokenIn != address(0) && _tokenOut != address(0), "tokens should not be zero!");
         require(_amountIn > 0, "amount in should not be zero");
 
-        address poolAddress = getPairAddress(_tokenIn, _tokenOut);
+        address poolAddress = getPoolAddress(_tokenIn, _tokenOut);
 
         uint amountIn = transferTokens(_amountIn, _tokenIn, to, poolAddress);
 
         uint balanceBefore = IERC20(_tokenOut).balanceOf(to);
 
-        _swapTokensWithFees(poolAddress, to, _tokenIn, amountIn);
+        _swapTokenToToken(poolAddress, to, _tokenIn, amountIn);
         
         uint balanceAfter = IERC20(_tokenOut).balanceOf(to);
         uint amountOut = balanceAfter - balanceBefore;
         require( amountOut >= _minAmountOut, 'insufficient output amount');
 
         uint _fees = ILiquidityPool(poolAddress).fees();
-        emit LogSwapTokensWithFees(msg.sender, _tokenIn, _tokenOut, poolAddress, _fees, _amountIn, amountOut);
+        emit LogswapTokenToToken(msg.sender, _tokenIn, _tokenOut, poolAddress, _fees, _amountIn, amountOut);
     }
 
     function transferTokens(uint _amountIn, address _tokenIn, address _to, address _poolAddress) 
@@ -138,13 +139,13 @@ contract PoolRouter is Ownable, ReentrancyGuard {
 
         IWETH(WETH).deposit{value : amountIn}();
 
-        address poolAddress = getPairAddress(WETH, _tokenOut);
+        address poolAddress = getPoolAddress(WETH, _tokenOut);
 
         require(IWETH(WETH).transfer( poolAddress, amountIn), "weth transfer failed!");
 
         uint balanceBefore = IERC20(_tokenOut).balanceOf(to);
 
-        _swapTokensWithFees(poolAddress, to, WETH, amountIn);
+        _swapTokenToToken(poolAddress, to, WETH, amountIn);
 
         uint balanceAfter = IERC20(_tokenOut).balanceOf(to);
 
@@ -166,11 +167,11 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         address to = msg.sender;
         require(_tokenIn != address(0), 'Zero address not allowed!');
 
-        address poolAddress = getPairAddress(_tokenIn, WETH);
+        address poolAddress = getPoolAddress(_tokenIn, WETH);
 
         uint amountIn = transferTokens(_amountIn, _tokenIn, to, poolAddress);
 
-        _swapTokensWithFees(poolAddress, address(this), _tokenIn, amountIn);
+        _swapTokenToToken(poolAddress, address(this), _tokenIn, amountIn);
         
         uint amountOut = IERC20(WETH).balanceOf(address(this));
         require( amountOut > 0, "amountOut is zero!");
@@ -201,7 +202,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         require(_amountADesired > 0, "TokenA amount is zero!");
         require(_amountBDesired > 0, "TokenB amount is zero!");
 
-        address poolAddress = getPairAddress(_tokenA, _tokenB);
+        address poolAddress = getPoolAddress(_tokenA, _tokenB);
         require(poolAddress != address(0), "Token pool does not exist!");
         
         (amountA, amountB) = _getOptimalLiquidityAmount(_tokenA, _tokenB, _amountADesired, _amountBDesired, _amountAMin, _amountBMin);
@@ -229,7 +230,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         require(_token != address(0), "token address should not be zero!");
         require(msg.value > 0, "ether amount not equal to zero!");
         address to = msg.sender;
-        address poolAddress = getPairAddress(_token, WETH);
+        address poolAddress = getPoolAddress(_token, WETH);
         require(poolAddress != address(0), "Token pool does not exist!");
 
         (amountToken, amountETH) = _getOptimalLiquidityAmount(
@@ -265,19 +266,19 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         uint _amountBMin
     ) internal view returns (uint amountA, uint amountB) {
         
-        address poolAddress = getPairAddress(_tokenA, _tokenB);
+        address poolAddress = getPoolAddress(_tokenA, _tokenB);
         (,, uint reserveA, uint reserveB) = ILiquidityPool(poolAddress).getReserves(_tokenA);
 
         if (reserveA == 0 && reserveB == 0) {
             (amountA, amountB) = (_amountADesired, _amountBDesired);
         } else {
-            uint amountBOptimal = getTokenPairRatio(_tokenA, _tokenB, _amountADesired);
+            uint amountBOptimal = getTokenPoolRatio(_tokenA, _tokenB, _amountADesired);
 
             if (amountBOptimal <= _amountBDesired) {
                 require(amountBOptimal >= _amountBMin, 'Insufficient TokenB amount!');
                 (amountA, amountB) = (_amountADesired, amountBOptimal);
             } else {
-                uint amountAOptimal = getTokenPairRatio(_tokenA, _tokenB, _amountBDesired);
+                uint amountAOptimal = getTokenPoolRatio(_tokenA, _tokenB, _amountBDesired);
                 assert(amountAOptimal <= _amountADesired);
                 require(amountAOptimal >= _amountAMin, 'Insufficient TokenB amount!');
                 (amountA, amountB) = (amountAOptimal, _amountBDesired);
@@ -298,7 +299,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
             returns (uint amountA, uint amountB) 
     {
 
-        address poolAddress = getPairAddress(_tokenA, _tokenB);
+        address poolAddress = getPoolAddress(_tokenA, _tokenB);
         require(poolAddress != address(0), "Token pool does not exist!");
 
         bool status = ILiquidityPool(poolAddress).transferFrom(msg.sender, poolAddress, _shares);
@@ -345,23 +346,23 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         emit LogRemoveLiquidityETH(msg.sender, _token, _shares, amountToken, amountETH);
     }
 
-    function getTokenPairRatio(address _tokenA, address _tokenB, uint _amountIn)
+    function getTokenPoolRatio(address _tokenA, address _tokenB, uint _amountIn)
         public
         view
         returns (uint amountOut)
     {
-        address poolAddress = getPairAddress(_tokenA, _tokenB);
+        address poolAddress = getPoolAddress(_tokenA, _tokenB);
         (,, uint reserveIn, uint reserveOut) = ILiquidityPool(poolAddress).getReserves(_tokenA);
         
         amountOut = reserveIn == 0 ? 0 : (reserveOut * _amountIn) / reserveIn;
     }
 
-    function getTokenPairReserves(address _token0, address _token1)
+    function getTokenPoolReserves(address _token0, address _token1)
         external
         view
         returns(uint amount0, uint amount1)
     {
-        address poolAddress = getPairAddress(_token0, _token1);
+        address poolAddress = getPoolAddress(_token0, _token1);
         require(poolAddress != address(0), "pool does not exist!");
 
         (amount0, amount1, ) = ILiquidityPool(poolAddress).getLatestReserves();
@@ -382,7 +383,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         view
         returns (uint amountOut)
     {
-        address poolAddress = getPairAddress(_tokenIn, _tokenOut);
+        address poolAddress = getPoolAddress(_tokenIn, _tokenOut);
         require(poolAddress != address(0), "pool does not exist!");
 
         uint amountIn;
@@ -391,13 +392,13 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         amountOut = ILiquidityPool(poolAddress).getTokensOutAmount(_tokenIn, amountIn);
     }
 
-    function getPairAddress(address _token0, address _token1)
+    function getPoolAddress(address _token0, address _token1)
         internal
         view
         returns(address poolAddress)
     {
         (address token0, address token1) = sortTokens(_token0, _token1);
-        poolAddress = IPoolFactory(factory).getPairAddress(token0, token1);
+        poolAddress = IPoolFactory(factory).getPoolAddress(token0, token1);
         require(poolAddress != address(0), "pool does not exist!");
     }
 
