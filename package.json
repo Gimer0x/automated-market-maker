@@ -13,10 +13,10 @@
     "clean": "npx hardhat clean",
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
-    "deploy:local": "npx hardhat run scripts/deploy.ts --network localhost",
-    "deploy:goerli": "npx hardhat run scripts/deploy_arbitrum_goerli.ts --network arbitrum_goerli",
-    "deploy:sepolia": "npx hardhat run scripts/deploy.ts --network sepolia",
-    "deploy:tokens": "npx hardhat run scripts/deploy_tokens.ts --network sepolia",
-    "flat": "npx hardhat flatten contracts/PoolFactory.sol > PoolFactory.sol"
+    "deploy:local": "npx hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "npx hardhat run scripts/deploy.js --network sepolia",
+    "initialize:sepolia": "npx hardhat run scripts/initialize.js --network sepolia",
+    "flat:factory": "npx hardhat flatten contracts/PoolFactory.sol > PoolFactory.sol",
+    "flat:router": "npx hardhat flatten contracts/PoolRouter.sol > PoolRouter.sol"
   }
 }
