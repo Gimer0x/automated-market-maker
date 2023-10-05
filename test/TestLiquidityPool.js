@@ -130,6 +130,22 @@ describe("Liquidity Pool", function () {
             .not.to.be.reverted;
     });
 
+    it("Should allow to swap tokens after added liquidity", async() => {
+      const { dexPool, uni, dai, supplier1, trader1} = await loadFixture(initializePool);
+
+      await expect(dexPool.connect(supplier1).addLiquidity(supplier1))
+            .not.to.be.reverted;
+
+      const tokensOut = await dexPool.getAmountOut(uni, ONE);
+
+      // tokenOut = ( reserves1 * tokenIn) / (reserves0 + tokensIn)
+      await uni.connect(trader1).transfer(dexPool, ONE);
+                
+      await expect(dexPool.connect(trader1).swapTokens(tokensOut, trader1, uni))
+        .not.to.be.reverted;
+
+    });
+
     it("Should be able to swap tokens with fees", async () => {
       const { dexPool, uni, dai, supplier1, trader1} = await loadFixture(initializePool);
 
@@ -178,23 +194,6 @@ describe("Liquidity Pool", function () {
 
       expect(uniNewBalance).to.be.equal(uniInitialBalance - ONE);
       expect(tokensOut).to.be.equal(daiNewBalance - daiInitialBalance);
-    });
-
-
-    it("Should be able to validate tokens amount after swapping", async() => {
-      const { dexPool, uni, dai, supplier1, trader1} = await loadFixture(initializePool);
-
-      await expect(dexPool.connect(supplier1).addLiquidity(supplier1))
-            .not.to.be.reverted;
-
-      const tokensOut = await dexPool.getAmountOut(uni, ONE);
-
-      // tokenOut = ( reserves1 * tokenIn) / (reserves0 + tokensIn)
-      await uni.connect(trader1).transfer(dexPool, ONE);
-                
-      await expect(dexPool.connect(trader1).swapTokens(tokensOut, trader1, uni))
-        .not.to.be.reverted;
-
     });
 
     it("Should be able to remove all liquidity", async () => {

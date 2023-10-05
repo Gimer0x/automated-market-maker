@@ -12,12 +12,14 @@ async function main() {
   const ONEHUNDRED = ethers.parseEther("100");
   const initialTokens = ethers.parseEther("10000");
   
-  const daiAddress = "0x5D56c511572B57eD24aB89f572659aC5016FB0BA";
-  const batAddress = "0xAE65DD502c1A086A324a97248bB75e52c6a2A409";
-  const uniAddress = "0x38bc780e0f42c3108a75FA6a5d762D2f11D661D4";
-  const wethAddress = "0xB7C573fB7a38a68FE55D7C66BD1cdef880c8301F";
-  const factoryAddress = "0x25AEfC6A20844Eeca35637cFADC7773537Ea287c";
-  const routerAddress = "0x124B8c59A85859466E517Cd1529bEB25a55bfEa7";
+  const daiAddress = "0x8F97c9e52dDfC1F8b03e897c1F7D85db5242b55D";
+  const batAddress = "0x0d299b7E262250F1a84fb53AC5cF75176415B48D";
+  const uniAddress = "0x3bfCDdf53140f8e87E0c942e3Cb17076C30876FD";
+  const wethAddress = "0x90857924Dab0effcBebd7108Eae5bA9060Fdf4a8";
+  const factoryAddress = "0x034174932b140352555c138087224c043503974e";
+  const routerAddress = "0x65983431d26FdfC8f1A6A9A03732C050A95D3Ee1";
+
+  // Pool Address:0x83531E6467b81723b0E5d2f88105e50465b40Aa4
 
   const dai = await hre.ethers.getContractAt("Token", daiAddress);
   const bat = await hre.ethers.getContractAt("Token", batAddress);
@@ -34,16 +36,16 @@ async function main() {
 
   console.log("Tokens approved");
 
-  let tx = await factory.createPool(batAddress, daiAddress, FEES);
+  let tx = await factory.createPool(uniAddress, daiAddress, FEES);
   await tx.wait(1);
   
   const pools = await factory.allPoolsLength();
   console.log("Pools: ", pools);
     
-  const poolAddress = await factory.getPoolAddress(batAddress, daiAddress);
+  const poolAddress = await factory.getPoolAddress(uniAddress, daiAddress);
   console.log("Pool: ", poolAddress);
 
-  tx = await router.addTokenToTokenLiquidity(batAddress, daiAddress, FIFTY, ONEHUNDRED, 0, 0);
+  tx = await router.addTokenToTokenLiquidity(uniAddress, daiAddress, FIFTY, ONEHUNDRED, 0, 0);
   await tx.wait(1);
 
   const pool = await hre.ethers.getContractAt("LiquidityPool", poolAddress);

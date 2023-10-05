@@ -14,7 +14,7 @@ const FEES = 2000;
 const initialTokens = ethers.parseEther("100");
 const ZeroAddress   = ethers.ZeroAddress;
 
-describe("Liquidity Pool", function () {
+describe("Pool Factory Test", function () {
   async function deployContracts () {
     const [owner, supplier1, trader1, notOwner] = await ethers.getSigners();
 

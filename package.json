@@ -6,9 +6,10 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.9.3",
+    "bn.js": "^5.2.1",
     "dotenv": "^16.3.1"
   },
-   "scripts": {
+  "scripts": {
     "start": "npx hardhat node",
     "clean": "npx hardhat clean",
     "test": "npx hardhat test",

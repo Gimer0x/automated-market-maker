@@ -10,7 +10,7 @@ interface ILiquidityPool {
     function removeLiquidity(address _to) external returns (uint amount0, uint amount1);
     function transferFrom(address from, address to, uint256 amount ) external returns (bool);
     function getTokenPairRatio(address _tokenIn, uint _amountIn) external view returns (uint tokenOut);
-    function getTokensOutAmount(address _tokenIn, uint _amountIn) external view returns (uint amountOut);
+    function getAmountOut(address _tokenIn, uint _amountIn) external view returns (uint amountOut);
     function getLatestReserves() external view returns (uint _reserve0, uint _reserve1, uint _blockTimestampLast);
     function getReserves(address _tokenIn) external view returns (IERC20 tokenIn, IERC20 tokenOut, uint reserveIn, uint reserveOut);
 }

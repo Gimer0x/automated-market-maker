@@ -32,7 +32,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         address poolAddress
     );
 
-    event LogswapTokenToToken(
+    event LogSwapTokenToToken(
         address _sender, 
         address _tokenIn, 
         address _tokenOut, 
@@ -69,7 +69,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
     {
         uint amountOut;
 
-        amountOut = ILiquidityPool(_poolAddress).getTokensOutAmount(_tokenIn, _amountIn);
+        amountOut = ILiquidityPool(_poolAddress).getAmountOut(_tokenIn, _amountIn);
         ILiquidityPool(_poolAddress).swapTokens(amountOut, _to, _tokenIn);
     }
 
@@ -100,7 +100,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         require( amountOut >= _minAmountOut, 'insufficient output amount');
 
         uint _fees = ILiquidityPool(poolAddress).fees();
-        emit LogswapTokenToToken(msg.sender, _tokenIn, _tokenOut, poolAddress, _fees, _amountIn, amountOut);
+        emit LogSwapTokenToToken(msg.sender, _tokenIn, _tokenOut, poolAddress, _fees, _amountIn, amountOut);
     }
 
     function transferTokens(uint _amountIn, address _tokenIn, address _to, address _poolAddress) 
@@ -117,7 +117,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
 
     function getAmountIn(uint _amountIn)
         view
-        internal 
+        public 
         returns(uint _ownerFees, uint amountIn) 
     {
         _ownerFees = (_amountIn * ownerFees)/factor;
@@ -378,7 +378,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         require(token0 != address(0), 'zero address not allowed!');
     }
 
-    function getTokenAmountOut(address _tokenIn, address _tokenOut, uint _amountIn) 
+    function getPoolAmountOut(address _tokenIn, address _tokenOut, uint _amountIn) 
         external
         view
         returns (uint amountOut)
@@ -389,7 +389,7 @@ contract PoolRouter is Ownable, ReentrancyGuard {
         uint amountIn;
         (, amountIn) = getAmountIn(_amountIn);
 
-        amountOut = ILiquidityPool(poolAddress).getTokensOutAmount(_tokenIn, amountIn);
+        amountOut = ILiquidityPool(poolAddress).getAmountOut(_tokenIn, amountIn);
     }
 
     function getPoolAddress(address _token0, address _token1)
