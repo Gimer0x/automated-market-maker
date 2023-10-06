@@ -23,7 +23,7 @@ npx hardhat compile
 
 npx hardat test
 ```
-To deploy the contracts to the Sepolia test network follow the next steps:
+Remeber that you need to create a .env file and configure an RPC endpoint for the Sepolia Network. [Alchemy](https://www.alchemy.com/) and [Infura](https://www.infura.io/) are very popular service providers. To deploy the contracts to the Sepolia test network follow the next steps:
 
 ```
 npm run deploy:sepolia
@@ -33,7 +33,11 @@ Now copy the smart contract addresses into the script: scripts/initialize.js. To
 ```
 npm run initialize:sepolia
 ```
-After this step you have just created a new pool and you also added liquidity.
+After this step you created a new pool and you also added liquidity.
+
+This an example of swapping Uni and Dai test tokens on the Sepolia network: 
+
+[https://sepolia.etherscan.io/tx/0xc58b99c41893ab118e02cd71c21bc87b685f4778033f442d3e33b63658ccb885](https://sepolia.etherscan.io/tx/0xc58b99c41893ab118e02cd71c21bc87b685f4778033f442d3e33b63658ccb885)
 
 ## Features ##
 These are some of the most important features implemented:
