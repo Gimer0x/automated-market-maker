@@ -50,7 +50,7 @@ async function main() {
 
   const pool = await hre.ethers.getContractAt("LiquidityPool", poolAddress);
 
-  console.log("Total shares: ", await pool.totalSupply());
+  console.log("Done!");
 
 }
 
