@@ -1,4 +1,4 @@
-# Decentralized Exchange Project
+# Automated Market Maker (AMM) Project
 This repository contains a sample of an Automated Market Maker (AMM) developed to show my skills as a Smart Contract developer with Solidity. The architecture of the project is based on the UniswapV2 protocol and implements the constant product model. The project was developed using Hardhat, Ethers.js, javascript, mocha and chai.<br />
 
 These are the addresses of the contracts deployed on the **Sepolia** test network:
