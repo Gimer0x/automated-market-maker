@@ -8,7 +8,8 @@ const {
   ETHEREUM_SEPOLIA_KEY,
   ARBITRUM_GOERLI_KEY,
   ARBITRUM_MAINNET_KEY,
-  ARBISCAN_APIKEY
+  ARBISCAN_APIKEY,
+  ETHERSCAN_APIKEY
 } = process.env;
 
 module.exports = {
@@ -27,5 +28,9 @@ module.exports = {
   },
   arbiscan: {
     apiKey: ARBISCAN_APIKEY
+  },
+  etherscan: {
+    apiKey: ETHERSCAN_APIKEY
   }
+  
 };

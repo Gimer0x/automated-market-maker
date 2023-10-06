@@ -1,6 +1,12 @@
 # Decentralized Exchange Project
 This repository contains a sample of a Decentralized Exchange developed to show my skills as a Smart Contract developer with Solidity. The project was deveoped using Hardhat, Ethers.js, javascript, mocha and chai. The architecture of the project is based on the UniswapV2 protocol. I implemented the following smart contracts: <br />
 
+These are the addresses of the contracts deployed on the **Sepolia** test network:
+
+**PoolRouter**: [0xDcC0FD6FEC01B50c560eA3E749322F1D9f9C6ec3](https://sepolia.etherscan.io/address/0xDcC0FD6FEC01B50c560eA3E749322F1D9f9C6ec3#code)
+
+**PoolFactory**: [0xA47B4cC48f77dbC0726Fa12eF15c6dbBaff09c79](https://sepolia.etherscan.io/address/0xA47B4cC48f77dbC0726Fa12eF15c6dbBaff09c79#code)
+
 ## Smart Contracts ##
 1.**LiquidityPool**: This smart contract represents a generic liquidity pool. <br />
 

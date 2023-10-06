@@ -11,15 +11,15 @@ async function main() {
   const FIFTY = ethers.parseEther("50");
   const ONEHUNDRED = ethers.parseEther("100");
   const initialTokens = ethers.parseEther("10000");
-  
-  const daiAddress = "0x8F97c9e52dDfC1F8b03e897c1F7D85db5242b55D";
-  const batAddress = "0x0d299b7E262250F1a84fb53AC5cF75176415B48D";
-  const uniAddress = "0x3bfCDdf53140f8e87E0c942e3Cb17076C30876FD";
-  const wethAddress = "0x90857924Dab0effcBebd7108Eae5bA9060Fdf4a8";
-  const factoryAddress = "0x034174932b140352555c138087224c043503974e";
-  const routerAddress = "0x65983431d26FdfC8f1A6A9A03732C050A95D3Ee1";
 
-  // Pool Address:0x83531E6467b81723b0E5d2f88105e50465b40Aa4
+  const daiAddress = "0x53A912943928F6d26696DF9C31B16355Ff4ED924";
+  const batAddress = "0x929EA224b9304a2D4A818520eF79C23f22CC7c8e";
+  const uniAddress = "0xfe457663234EC1Db6CB4eE472931A9553362440E";
+  const wethAddress = "0x6188dbAbdD8e347a69530dF39bA1f167cFCac88a";
+  const factoryAddress = "0xA47B4cC48f77dbC0726Fa12eF15c6dbBaff09c79";
+  const routerAddress = "0xDcC0FD6FEC01B50c560eA3E749322F1D9f9C6ec3";
+
+  // Pool Address: 0xF580CF8CDbC3009aD4D87E21fE5CA4543ad35Ba4
 
   const dai = await hre.ethers.getContractAt("Token", daiAddress);
   const bat = await hre.ethers.getContractAt("Token", batAddress);

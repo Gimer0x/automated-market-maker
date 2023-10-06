@@ -10,7 +10,7 @@ contract PoolFactory is Pausable, OnChainWhitelist {
     
     mapping(address => mapping(address => address)) public getPoolAddress;
     
-    event LogCreatePair(address _token0, address _token1, address _sender, uint _pairsLength);
+    event LogCreatePool(address _token0, address _token1, address _sender, uint _pairsLength);
 
     constructor() {}
 
@@ -49,7 +49,7 @@ contract PoolFactory is Pausable, OnChainWhitelist {
         LiquidityPool(poolAddress).initPool(_token0, _token1, _fees);
         LiquidityPool(poolAddress).transferOwnership(msg.sender);
 
-        emit LogCreatePair(_token0, _token1, msg.sender, allPools.length);
+        emit LogCreatePool(_token0, _token1, msg.sender, allPools.length);
     }
 
     function poolExists(address _tokenA, address _tokenB)

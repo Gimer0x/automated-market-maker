@@ -17,7 +17,7 @@
     "deploy:local": "npx hardhat run scripts/deploy.js --network localhost",
     "deploy:sepolia": "npx hardhat run scripts/deploy.js --network sepolia",
     "initialize:sepolia": "npx hardhat run scripts/initialize.js --network sepolia",
-    "flat:factory": "npx hardhat flatten contracts/PoolFactory.sol > PoolFactory.sol",
-    "flat:router": "npx hardhat flatten contracts/PoolRouter.sol > PoolRouter.sol"
+    "verify:factory": "npx hardhat verify --network sepolia 0xDcC0FD6FEC01B50c560eA3E749322F1D9f9C6ec3",
+    "verify:router": "npx hardhat verify --network sepolia 0xDcC0FD6FEC01B50c560eA3E749322F1D9f9C6ec3 0xA47B4cC48f77dbC0726Fa12eF15c6dbBaff09c79 0x6188dbAbdD8e347a69530dF39bA1f167cFCac88a"
   }
 }
