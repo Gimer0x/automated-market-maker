@@ -35,9 +35,7 @@ npm run initialize:sepolia
 ```
 After this step you created a new pool and you also added liquidity.
 
-This an example of swapping Uni and Dai test tokens on the Sepolia network: 
-
-[https://sepolia.etherscan.io/tx/0xc58b99c41893ab118e02cd71c21bc87b685f4778033f442d3e33b63658ccb885](https://sepolia.etherscan.io/tx/0xc58b99c41893ab118e02cd71c21bc87b685f4778033f442d3e33b63658ccb885)
+These are the [transaction details](https://sepolia.etherscan.io/tx/0xc58b99c41893ab118e02cd71c21bc87b685f4778033f442d3e33b63658ccb885) of swapping Uni and Dai test tokens on the Sepolia network.
 
 ## Features ##
 These are some of the most important features implemented:
