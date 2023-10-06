@@ -1,5 +1,5 @@
 # Decentralized Exchange Project
-This repository contains a sample of a Decentralized Exchange developed to show my skills as a Smart Contract developer with Solidity. The project was deveoped using Hardhat, Ethers.js, javascript, mocha and chai. The architecture of the project is based on the UniswapV2 protocol. I implemented the following smart contracts: <br />
+This repository contains a sample of an Automated Market Maker (AMM) developed to show my skills as a Smart Contract developer with Solidity. The architecture of the project is based on the UniswapV2 protocol and implements the constant product model. The project was developed using Hardhat, Ethers.js, javascript, mocha and chai.<br />
 
 These are the addresses of the contracts deployed on the **Sepolia** test network:
 
@@ -10,9 +10,9 @@ These are the addresses of the contracts deployed on the **Sepolia** test networ
 ## Smart Contracts ##
 1.**LiquidityPool**: This smart contract represents a generic liquidity pool. <br />
 
-2.**PoolFactory**: The pool factory manage different liquidity pools. <br />
+2.**PoolFactory**: The pool factory manage and creates different liquidity pools. <br />
 
-3.**PoolRouter**: The router is the contract designed to interact with. It obtain information from pools through the pool factory contract. <br />
+3.**PoolRouter**: The router is the contract designed to interact with the pool factory and the liquidity pools. <br />
 
 ## Installation and Deployment ##
 To execute the project run the following commands:
@@ -33,7 +33,7 @@ Now copy the smart contract addresses into the script: scripts/initialize.js. To
 ```
 npm run initialize:sepolia
 ```
-After this you have created a new pool and you added liquidity.
+After this step you have just created a new pool and you also added liquidity.
 
 ## Features ##
 These are some of the most important features implemented:
@@ -43,7 +43,7 @@ These are some of the most important features implemented:
 * Add and remove liquidity.
 * Manage shares.
 * Implements the constant product model of UniswapV2.
-* Validates tokens with different number of decimals.
+* Allows swap of tokens with different number of decimals.
 * Testing
 
 
