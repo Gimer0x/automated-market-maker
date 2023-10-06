@@ -22,16 +22,11 @@ To deploy the contracts to the Sepolia test network follow the next steps:
 ```
 deploy:sepolia
 ```
-Copy the smart contract addresses into the script: scripts/initialize.js, to create a sample liquidity pool and add liquidity.
+Copy the smart contract addresses into the script: scripts/initialize.js. Now to create a sample liquidity pool and add liquidity execute the following command:
 
-Now execute the following command:
 ```
 npm run initialize:sepolia
 ```
-
-  "deploy:sepolia": "npx hardhat run scripts/deploy.js --network sepolia",
-    "initialize:sepolia
-
 
 ## Features ##
 These are some of the most important features implemented:
